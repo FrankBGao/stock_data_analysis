@@ -1,8 +1,7 @@
 import pandas as pd
 from visual import visual
 from gain_data import to_download_data
-from predict_ding_di import combine_interval_points
-import numpy as np
+from machine_learning.predict_ding_di import combine_interval_points
 
 
 def get_ding(input_data):
@@ -31,7 +30,7 @@ def run_functions(functions, data):
     data.index = range(len(data))
     result = []
     one_slide = 3
-    for i in range(len(data) - one_slide):
+    for i in range(len(data) - one_slide + 1):
         this_result = []
         for fun_name in functions:
             fun = functions[fun_name]
@@ -108,7 +107,7 @@ def merge_result_back_to_data(data, linked_result, fun_result):
 if __name__ == '__main__':
     this_functions = {"ding": get_ding, "di": get_di}
     # this_data = pd.read_excel("sh60030.xlsx")
-    this_code = "600030"  # 600036 # 600298 # 000858
+    this_code = "000725"  # 600036 # 600298 # 000858
 
     try:
         this_data = pd.read_excel("code" + this_code + ".xlsx")
