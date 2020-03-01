@@ -3,6 +3,28 @@ from visual import visual
 from gain_data import to_download_data
 from machine_learning.predict_ding_di import combine_interval_points
 
+# just two days
+# def get_ding(input_data):
+#     one, two, three = input_data  # (input_data[0], input_data[1], input_data[2])
+#     cond_1 = one["high"] > two["high"]
+#     if not cond_1:
+#         return False
+#     cond_2 = two["high"] < one["low"]
+#     if not cond_2:
+#         return False
+#     return True
+#
+#
+# def get_di(input_data):
+#     one, two, three = input_data  # (input_data[0], input_data[1], input_data[2])
+#     cond_1 = one["high"] < two["high"]
+#     if not cond_1:
+#         return False
+#     cond_2 = two["low"] > one["high"]
+#     if not cond_2:
+#         return False
+#     return True
+
 
 def get_ding(input_data):
     one, two, three = input_data  # (input_data[0], input_data[1], input_data[2])
@@ -107,7 +129,7 @@ def merge_result_back_to_data(data, linked_result, fun_result):
 if __name__ == '__main__':
     this_functions = {"ding": get_ding, "di": get_di}
     # this_data = pd.read_excel("sh60030.xlsx")
-    this_code = "000725"  # 600036 # 600298 # 000858
+    this_code = "600030"  # 600036 # 600298 # 000858
 
     try:
         this_data = pd.read_excel("code" + this_code + ".xlsx")
@@ -118,11 +140,11 @@ if __name__ == '__main__':
     this_data.index = range(len(this_data))
     this_fun_result = run_functions(this_functions, this_data)
 
-    this_fun_result = combine_interval_points(this_fun_result, this_data)
+    this_fun_result = combine_interval_points(this_fun_result, this_data, just_first_one = True)
 
     this_linked_result = link_between_ding_di(this_data, this_fun_result)
     a = merge_result_back_to_data(this_data, this_linked_result, this_fun_result)
-
+    # a.to_excel("result" + this_code + ".xlsx")
     a = visual(a)
     # print(this_fun_result[:2])
     with open("result.json", mode="w") as a_file:

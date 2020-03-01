@@ -6,8 +6,8 @@ from sklearn import tree, svm
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.neural_network import MLPClassifier
 
-data = pd.read_excel("one_more_day.xlsx")
-# data = pd.read_excel("the_day.xlsx")
+# data = pd.read_excel("one_more_day.xlsx")
+data = pd.read_excel("the_day.xlsx")
 
 dv_train = DictVectorizer(sparse=False)  # sparse=False
 
@@ -47,7 +47,7 @@ acc_score = clf.score(x_test_clf, y_test_clf)
 print("svc")
 print(r_score)
 print(acc_score)
-
+print(clf.predict(x_train_clf))
 
 mlp = MLPClassifier(hidden_layer_sizes=(50,), max_iter=10, alpha=1e-4,
                     solver='sgd', verbose=10, random_state=1,

@@ -3,7 +3,7 @@ import copy
 import random
 
 
-def combine_interval_points(fun_result, data):
+def combine_interval_points(fun_result, data, just_first_one=False):
     # combine
     need_combine = []
     inter = []
@@ -47,8 +47,12 @@ def combine_interval_points(fun_result, data):
         price = []
         for i in comb:
             price.append(data.loc[i["index"]][price_type])
-        target_item = price_fun(price)
-        target_index = price.index(target_item)
+        if not just_first_one:
+            target_item = price_fun(price)
+            target_index = price.index(target_item)
+        else:
+            target_index = 0
+
         target = comb[target_index]
         new_list.append(target)
     return new_list
@@ -109,7 +113,7 @@ def gain_random_no_meaning_point(fun_result, data, len_fun_result=None):
     no_meaning_point.sort()
 
     no_meaning_point = copy.deepcopy(data.loc[no_meaning_point])
-    no_meaning_point["type_is"] = "no"
+    no_meaning_point["type_is"] = "in_trend"
     no_meaning_point = no_meaning_point[["open", "high", "close", "low", "volume", "p_change", "type_is"]]
     return no_meaning_point
 
