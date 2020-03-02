@@ -31,6 +31,7 @@ def get_ding(input_data):
     # sliding_window = 3
     one, two, three = input_data  # (input_data[0], input_data[1], input_data[2])
     cond_1 = one["high"] > two["high"] > three["high"]
+    # cond_1 = one["low"] > two["low"] > three["low"]
     if not cond_1:
         return False
     cond_2 = two["high"] < one["low"] or three["high"] < one["low"]
@@ -43,9 +44,59 @@ def get_di(input_data):
     # sliding_window = 4
     one, two, three = input_data  # (input_data[0], input_data[1], input_data[2])
     cond_1 = one["low"] < two["low"] < three["low"]
+    # cond_1 = one["high"] < two["high"] < three["high"]
     if not cond_1:
         return False
     cond_2 = two["low"] > one["high"] or three["low"] > one["high"]
+    if not cond_2:
+        return False
+    return True
+
+
+def get_ding_four(input_data):
+    # sliding_window = 3
+    one, two, three, four = input_data  # (input_data[0], input_data[1], input_data[2])
+    cond_1 = one["high"] > two["high"] > three["high"] > four["high"]
+    if not cond_1:
+        return False
+    cond_2 = two["high"] < one["low"] or three["high"] < one["low"] or four["high"] < one["low"]
+    if not cond_2:
+        return False
+    return True
+
+
+def get_di_four(input_data):
+    # sliding_window = 4
+    one, two, three, four = input_data  # (input_data[0], input_data[1], input_data[2])
+    cond_1 = one["low"] < two["low"] < three["low"] < four["low"]
+    if not cond_1:
+        return False
+    cond_2 = two["low"] > one["high"] or three["low"] > one["high"] or four["low"] > one["high"]
+    if not cond_2:
+        return False
+    return True
+
+
+def get_ding_five(input_data):
+    # sliding_window = 3
+    one, two, three, four, five = input_data  # (input_data[0], input_data[1], input_data[2])
+    cond_1 = one["high"] > two["high"] > three["high"] > four["high"] > five["high"]
+    if not cond_1:
+        return False
+    cond_2 = two["high"] < one["low"] or three["high"] < one["low"] or four["high"] < one["low"] or five["high"] < one[
+        "low"]
+    if not cond_2:
+        return False
+    return True
+
+
+def get_di_five(input_data):
+    # sliding_window = 4
+    one, two, three, four, five = input_data  # (input_data[0], input_data[1], input_data[2])
+    cond_1 = one["low"] < two["low"] < three["low"] < four["low"] < five["low"]
+    if not cond_1:
+        return False
+    cond_2 = two["low"] > one["high"] or three["low"] > one["high"] or four["low"] > one["high"] or five["low"] > one["high"]
     if not cond_2:
         return False
     return True
@@ -187,11 +238,15 @@ def merge_result_back_to_data(data, linked_result, fun_result):
 
 
 if __name__ == '__main__':
-    # this_functions = {"ding": {"fun": get_ding, "sliding_window": 3}, "di": {"fun": get_di, "sliding_window": 3}}
-    this_functions = {"ding": {"fun": get_advance_ding, "sliding_window": 4},
-                      "di": {"fun": get_advance_di, "sliding_window": 4}}
+    this_functions = {"ding": {"fun": get_ding, "sliding_window": 3}, "di": {"fun": get_di, "sliding_window": 3}}
+    # this_functions = {"ding": {"fun": get_advance_ding, "sliding_window": 4},
+    #                   "di": {"fun": get_advance_di, "sliding_window": 4}}
+    # this_functions = {"ding": {"fun": get_ding_four, "sliding_window": 4},
+    #                   "di": {"fun": get_di_four, "sliding_window": 4}}
+    # this_functions = {"ding": {"fun": get_ding_five, "sliding_window": 5},
+    #                   "di": {"fun": get_di_five, "sliding_window": 5}}
     # this_data = pd.read_excel("sh60030.xlsx")
-    this_code = "600030"  # 600036 # 600298 # 000858 # 600999 # 000527 # 600717
+    this_code = "600030"  # 600036 # 600298 # 000858 # 600999 # 000527 # 600717 # 600030
 
     try:
         this_data = pd.read_excel("trade/data/code" + this_code + ".xlsx")
@@ -202,7 +257,7 @@ if __name__ == '__main__':
     this_data.index = range(len(this_data))
     this_fun_result = run_functions(this_functions, this_data)
 
-    this_fun_result = combine_interval_points(this_fun_result, this_data, just_first_one=True)
+    # this_fun_result = combine_interval_points(this_fun_result, this_data, just_first_one=True)
 
     this_linked_result = link_between_ding_di(this_data, this_fun_result)
     a = merge_result_back_to_data(this_data, this_linked_result, this_fun_result)

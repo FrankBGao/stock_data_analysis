@@ -6,15 +6,20 @@ class Trader:
         self.trading_record = []
         self.last_buy = {}
         self.last_sell = {}
+        self.info = {}
 
-    def buy(self, stock, price, date, quantity=None):
+    def buy(self, stock, price, date, quantity=None, percentage = None):
         could_buy = self.all_money // (price * 100)
 
-        if could_buy == 0:
+        if could_buy <= 1:
             return
+
         if quantity is None:
-            quantity = could_buy
-        else:
+            if percentage is None:
+                quantity = could_buy
+            else:
+                quantity = int(could_buy * percentage)
+        elif not percentage is None:
             if could_buy < quantity:
                 quantity = could_buy
 
