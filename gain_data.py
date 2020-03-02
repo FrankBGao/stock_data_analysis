@@ -21,4 +21,9 @@ def to_download_data(code):
     data.to_excel("code" + code + ".xlsx", index=False)
 
 
+def to_download_data_path(code, path):
+    data = gain_data(code)
+    data.to_excel(path + "code" + code + ".xlsx", index=False)
+
+
 this_code = "600318"

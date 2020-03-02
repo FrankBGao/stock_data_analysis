@@ -43,7 +43,7 @@ class Trader:
             "date": date,
         }
         self.trading_record.append(inter)
-        print(inter)
+        # print(inter)
 
     def sell(self, stock, price,date, quantity=None):
         if stock in self.holding_stock:
@@ -82,7 +82,7 @@ class Trader:
             "earn_percentage": (self.all_money - self.invest) / self.invest,
         }
         self.trading_record.append(inter)
-        print(inter)
+        # print(inter)
 
     def gain_all_trade_record(self):
         return self.trading_record

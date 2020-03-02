@@ -1,7 +1,8 @@
 import pandas as pd
 from visual import visual
-from gain_data import to_download_data
+from gain_data import to_download_data_path
 from machine_learning.predict_ding_di import combine_interval_points
+
 
 # just two days
 # def get_ding(input_data):
@@ -27,6 +28,7 @@ from machine_learning.predict_ding_di import combine_interval_points
 
 
 def get_ding(input_data):
+    # sliding_window = 3
     one, two, three = input_data  # (input_data[0], input_data[1], input_data[2])
     cond_1 = one["high"] > two["high"] > three["high"]
     if not cond_1:
@@ -38,8 +40,9 @@ def get_ding(input_data):
 
 
 def get_di(input_data):
+    # sliding_window = 4
     one, two, three = input_data  # (input_data[0], input_data[1], input_data[2])
-    cond_1 = one["high"] < two["high"] < three["high"]
+    cond_1 = one["low"] < two["low"] < three["low"]
     if not cond_1:
         return False
     cond_2 = two["low"] > one["high"] or three["low"] > one["high"]
@@ -48,14 +51,64 @@ def get_di(input_data):
     return True
 
 
+def get_advance_ding(input_data):
+    one, two, three, four = input_data
+    cond_1 = two["high"] > three["high"] and one["high"] < two["high"]
+    if not cond_1:
+        return False
+    cond_2 = one["low"] > two["low"] and one["low"] > three["low"]
+    if not cond_2:
+        return False
+
+    cond_3 = two["high"] > three["high"] > four["high"]
+    if not cond_3:
+        return False
+
+    cond_4 = two["low"] > three["low"] > four["low"]
+    if not cond_4:
+        return False
+
+    cond_5 = one["high"] < three["high"] and one["high"] < four["high"]
+    if not cond_5:
+        return False
+
+    return True
+
+
+def get_advance_di(input_data):
+    one, two, three, four = input_data
+    cond_1 = two["low"] < three["low"] and two["low"] < one["low"]
+    if not cond_1:
+        return False
+
+    cond_2 = one["high"] < two["high"] and one["high"] < three["high"]
+    if not cond_2:
+        return False
+
+    cond_3 = two["high"] < three["high"] < four["high"]
+    if not cond_3:
+        return False
+
+    cond_4 = two["low"] < three["low"] < four["low"]
+    if not cond_4:
+        return False
+
+    cond_5 = one["low"] > three["low"] and one["low"] > four["low"]
+    if not cond_5:
+        return False
+
+    return True
+
+
 def run_functions(functions, data):
     data.index = range(len(data))
     result = []
-    one_slide = 3
-    for i in range(len(data) - one_slide + 1):
+    max_one_slide = max([functions[i]["sliding_window"] for i in functions])
+    for i in range(len(data) - max_one_slide + 1):
         this_result = []
         for fun_name in functions:
-            fun = functions[fun_name]
+            fun = functions[fun_name]["fun"]
+            one_slide = functions[fun_name]["sliding_window"]
             the_input_data = [data.loc[i + j] for j in range(one_slide)]
             if fun(the_input_data):
                 this_result.append(fun_name)
@@ -82,6 +135,8 @@ def run_functions(functions, data):
 
 
 def link_between_ding_di(data, fun_result):
+    if len(fun_result) == 0:
+        return []
     result = []
     for index in range(len(fun_result) - 1):
         source_index = fun_result[index]["index"]
@@ -109,6 +164,11 @@ def link_between_ding_di(data, fun_result):
 
 
 def merge_result_back_to_data(data, linked_result, fun_result):
+    if len(fun_result) == 0:
+        data["point"] = data["open"]
+        data["ptype"] = "in_trend"
+        return data
+
     linked_result = pd.DataFrame(linked_result)
     linked_result.index = linked_result["index"]
 
@@ -127,20 +187,22 @@ def merge_result_back_to_data(data, linked_result, fun_result):
 
 
 if __name__ == '__main__':
-    this_functions = {"ding": get_ding, "di": get_di}
+    # this_functions = {"ding": {"fun": get_ding, "sliding_window": 3}, "di": {"fun": get_di, "sliding_window": 3}}
+    this_functions = {"ding": {"fun": get_advance_ding, "sliding_window": 4},
+                      "di": {"fun": get_advance_di, "sliding_window": 4}}
     # this_data = pd.read_excel("sh60030.xlsx")
-    this_code = "600030"  # 600036 # 600298 # 000858
+    this_code = "600030"  # 600036 # 600298 # 000858 # 600999 # 000527 # 600717
 
     try:
-        this_data = pd.read_excel("code" + this_code + ".xlsx")
+        this_data = pd.read_excel("trade/data/code" + this_code + ".xlsx")
     except FileNotFoundError:
-        to_download_data(this_code)
-        this_data = pd.read_excel("code" + this_code + ".xlsx")
+        to_download_data_path(this_code, "trade/data/")
+        this_data = pd.read_excel("trade/data/code" + this_code + ".xlsx")
 
     this_data.index = range(len(this_data))
     this_fun_result = run_functions(this_functions, this_data)
 
-    this_fun_result = combine_interval_points(this_fun_result, this_data, just_first_one = True)
+    this_fun_result = combine_interval_points(this_fun_result, this_data, just_first_one=True)
 
     this_linked_result = link_between_ding_di(this_data, this_fun_result)
     a = merge_result_back_to_data(this_data, this_linked_result, this_fun_result)

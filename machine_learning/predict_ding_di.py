@@ -4,6 +4,8 @@ import random
 
 
 def combine_interval_points(fun_result, data, just_first_one=False):
+    if len(fun_result) == 0:
+        return fun_result
     # combine
     need_combine = []
     inter = []
