@@ -18,7 +18,7 @@ def run_a_stock(code):
     # functions = {"ding": {"fun": get_ding_four, "sliding_window": 4},
     #                   "di": {"fun": get_di_four, "sliding_window": 4}}
     # functions = {"ding": {"fun": get_ding_five, "sliding_window": 5},
-    #                   "di": {"fun": get_di_five, "sliding_window": 5}}
+    #              "di": {"fun": get_di_five, "sliding_window": 5}}
     a_trader = Trader(100000)
     a_trader, a_result = regress_trading(functions, data, a_trader, code)
     a_result["stock"] = code
@@ -62,6 +62,6 @@ if __name__ == '__main__':
 
     this_all_result = pd.merge(this_all_result, stock[["code", "name"]], left_on="stock",
                                right_on="code")
-    this_all_result = this_all_result.sort_values("earn_percentage",ascending=False)
+    this_all_result = this_all_result.sort_values("earn_percentage", ascending=False)
     this_all_trading_record.to_excel("trade_records.xlsx")
     this_all_result.to_excel("trade_result.xlsx")

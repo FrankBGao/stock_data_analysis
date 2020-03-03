@@ -8,7 +8,7 @@ class Trader:
         self.last_sell = {}
         self.info = {}
 
-    def buy(self, stock, price, date, quantity=None, percentage = None):
+    def buy(self, stock, price, date, quantity=None, percentage=None):
         could_buy = self.all_money // (price * 100)
 
         if could_buy <= 1:
@@ -22,6 +22,9 @@ class Trader:
         elif not percentage is None:
             if could_buy < quantity:
                 quantity = could_buy
+
+        if quantity <= 1:
+            return
 
         amount = quantity * price * 100
 
@@ -50,15 +53,18 @@ class Trader:
         self.trading_record.append(inter)
         # print(inter)
 
-    def sell(self, stock, price,date, quantity=None):
+    def sell(self, stock, price, date, quantity=None, percentage=None):
         if stock in self.holding_stock:
             could_sell = self.holding_stock[stock]["quantity"]
         else:
             return
 
         if quantity is None:
-            quantity = could_sell
-        else:
+            if percentage is None:
+                quantity = could_sell
+            else:
+                quantity = int(could_sell * percentage)
+        elif not percentage is None:
             if could_sell < quantity:
                 quantity = could_sell
 
@@ -67,8 +73,10 @@ class Trader:
 
         if could_sell == quantity:
             self.holding_stock.pop(stock)
+            holding_stock_value = 0
         else:
             self.holding_stock[stock]["quantity"] -= quantity
+            holding_stock_value = self.holding_stock[stock]["quantity"] * price * 100
 
         self.last_sell = {stock: {"stock": stock,
                                   "quantity": quantity,
@@ -84,7 +92,7 @@ class Trader:
             "type_is": "sell",
             "all_money": self.all_money,
             "date": date,
-            "earn_percentage": (self.all_money - self.invest) / self.invest,
+            "earn_percentage": (self.all_money + holding_stock_value - self.invest) / self.invest,
         }
         self.trading_record.append(inter)
         # print(inter)

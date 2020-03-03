@@ -36,8 +36,7 @@ def combine_interval_points(fun_result, data, just_first_one=False):
         if not isinstance(comb, list):
             new_list.append(comb)
             continue
-        # if comb[0]["index"] == 576:
-        #     pass
+
         type_is = comb[0]["type_is"]
         if type_is == "di":
             price_type = "low"
