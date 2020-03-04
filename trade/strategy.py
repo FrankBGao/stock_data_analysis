@@ -11,11 +11,15 @@ def dummy_strategy(info, trader, stock_info):
 
 
 # this is the naive benchmark
-def naive_trading_strategy(info, trader, stock_info):
+def naive_trading_strategy(info, trader, stock_info,buy_switch = True):
     if "ding" in info:
         # return "sale"
         trader.sell(stock_info["stock"], stock_info["price"], stock_info["date"])
         return trader
+
+    if not buy_switch:
+        return trader
+
     if "di" in info:
         # return "buy"
         trader.buy(stock_info["stock"], stock_info["price"], stock_info["date"])
@@ -444,6 +448,7 @@ def three_step_buy_select(steps, up_down):
     stra = ["sensitive", "normal", "bold"]
     index_of = stra.index(steps)
     index_of = index_of + up_down
+    # print(steps, str(up_down), index_of)
     if index_of <= 0:
         return stra[0]
     if index_of >= len(stra) - 1:
@@ -452,16 +457,19 @@ def three_step_buy_select(steps, up_down):
 
 
 def earn_percent_w_smart_start_w_small_steps_w_safety_double(info, trader, stock_info,
-                                                             threshold,
+                                                             up_threshold,
+                                                             down_threshold,
                                                              safety_down,
                                                              safety_up,
+                                                             buy_switch = True,
+                                                             initial_step = "normal",
                                                              cold_down_period="30 day"):
     # threshold = 0.05
     sensitive = 2
     three_step_buy = {
+        "sensitive": [0.25, 0.25, 0],
         "normal": [0.5, 0.5, 1],
-        "sensitive": [0.25, 0.5, 1],
-        "bold": [1, 1, 1]
+        "bold": [0.75, 1, 1]
     }
     """
 
@@ -472,6 +480,7 @@ def earn_percent_w_smart_start_w_small_steps_w_safety_double(info, trader, stock
     :param safety_down: 跌了，害怕，跑
     :param safety_up: 涨了，挣了，跑
     :param cold_down_period:
+    :param initial_step: normal, sensitive, bold
     :return:
     """
     if "safety_sell" not in trader.info:
@@ -485,7 +494,8 @@ def earn_percent_w_smart_start_w_small_steps_w_safety_double(info, trader, stock
             "price": 0,
             "date": "",
             "cold_down_deadline": "",
-            "cold_down_period": ""
+            "cold_down_period": "",
+            "safety_down":safety_down
         }
         trader.info["last_ding"] = {
             "price": 0,
@@ -499,7 +509,7 @@ def earn_percent_w_smart_start_w_small_steps_w_safety_double(info, trader, stock
             "price": 0,
             "date": 0
         }
-        trader.info["three_step_buy"] = "normal"
+        trader.info["three_step_buy"] = initial_step
 
     three_step_buy_strategy = trader.info["three_step_buy"]
 
@@ -529,7 +539,7 @@ def earn_percent_w_smart_start_w_small_steps_w_safety_double(info, trader, stock
 
         # 跌怕了，半仓，冷静一段时间
         if need_price > stock_info["price"] * (1 + safety_down):
-            trader.sell(stock_info["stock"], stock_info["price"], stock_info["date"], percentage=0.5)
+            trader.sell(stock_info["stock"], stock_info["price"], stock_info["date"], percentage=0.5, option = "lost_safe")
 
             # trader.info["ding_di"] = []
             trader.info["safety_sell"] = {
@@ -541,22 +551,24 @@ def earn_percent_w_smart_start_w_small_steps_w_safety_double(info, trader, stock
             }
             # 惩罚，更小心一点
             trader.info["three_step_buy"] = three_step_buy_select(trader.info["three_step_buy"], -1)
-
+            trader.info["first_buy"]["buy_time"] = 0
             return trader
         # 落袋为安， 半仓
         elif stock_info["price"] > (1 + safety_up) * trader.info["first_buy"]["price"]:
             if trader.info["profit_sell"]["price"] == 0:
-                trader.sell(stock_info["stock"], stock_info["price"], stock_info["date"], percentage=0.5)
+                trader.sell(stock_info["stock"], stock_info["price"], stock_info["date"], percentage=0.5, option = "earn_safe")
                 trader.info["profit_sell"] = {
                     "price": stock_info["price"],
                     "date": stock_info["date"]
                 }
-            if trader.info["safety_sell"]["cold_down_period"] != "":
-                trader.info["safety_sell"]["cold_down_period"] = trader.info["safety_sell"][
-                                                                     "cold_down_period"] / sensitive
-                trader.info["safety_sell"]["safety_down"] = trader.info["safety_sell"]["safety_down"] / sensitive
-            # 奖励更大胆一些
-            trader.info["three_step_buy"] = three_step_buy_select(trader.info["three_step_buy"], 1)
+                # 奖励更大胆一些
+                trader.info["three_step_buy"] = three_step_buy_select(trader.info["three_step_buy"], 1)
+                if trader.info["safety_sell"]["cold_down_period"] != "":
+                    trader.info["safety_sell"]["cold_down_period"] = trader.info["safety_sell"][
+                                                                         "cold_down_period"] / sensitive
+                    trader.info["safety_sell"]["safety_down"] = trader.info["safety_sell"]["safety_down"] * sensitive
+
+
 
     if "ding" in info:
         # return "sale"
@@ -573,12 +585,15 @@ def earn_percent_w_smart_start_w_small_steps_w_safety_double(info, trader, stock
             return trader
         # 一段式卖出
         last_price = trader.info["first_buy"]["price"]
-        if last_price * (1 + threshold) < stock_info["price"]:
+        if last_price * (1 + up_threshold) < stock_info["price"]:
             trader.info["first_buy"]["price"] = 0
             trader.info["first_buy"]["buy_time"] = 0
             trader.info["profit_sell"]["price"] = 0
             trader.info["profit_sell"]["date"] = 0
-            trader.sell(stock_info["stock"], stock_info["price"], stock_info["date"])
+            trader.sell(stock_info["stock"], stock_info["price"], stock_info["date"], option = "ding")
+        return trader
+
+    if not buy_switch:
         return trader
 
     if "di" in info:
@@ -597,25 +612,28 @@ def earn_percent_w_smart_start_w_small_steps_w_safety_double(info, trader, stock
         if stock_info["stock"] not in trader.last_sell:
 
             # 三段式购买
-            if trader.info["first_buy"]["price"] == 0:
+            if trader.info["first_buy"]["buy_time"] == 0:
                 trader.buy(stock_info["stock"], stock_info["price"], stock_info["date"],
-                           percentage=three_step_buy[three_step_buy_strategy][0])
+                           percentage=three_step_buy[three_step_buy_strategy][0],
+                           option="f_1" + three_step_buy_strategy)
                 trader.info["first_buy"]["price"] = stock_info["price"]
                 trader.info["first_buy"]["buy_time"] = 1
             else:
                 # 连续底，追涨
                 cond_1 = pd.Timestamp(trader.info["last_di"]["date"]) > pd.Timestamp(trader.info["last_ding"]["date"])
                 # 上一个顶的价格比当前价格高
-                cond_2 = trader.info["last_ding"]["price"] * (1 - threshold) > stock_info["price"]
+                cond_2 = trader.info["last_ding"]["price"] * (1 - up_threshold) > stock_info["price"]
                 if trader.info["first_buy"]["buy_time"] == 1:
                     if cond_1 or cond_2:  # 追买 25%
                         trader.buy(stock_info["stock"], stock_info["price"], stock_info["date"],
-                                   percentage=three_step_buy[three_step_buy_strategy][1])
+                                   percentage=three_step_buy[three_step_buy_strategy][1],
+                                   option="f_2" + three_step_buy_strategy)
                         trader.info["first_buy"]["buy_time"] += 1
-                else:
+                elif trader.info["first_buy"]["buy_time"] == 2:
                     if cond_1 or cond_2:  # 追买 25%
                         trader.buy(stock_info["stock"], stock_info["price"], stock_info["date"],
-                                   percentage=three_step_buy[three_step_buy_strategy][2])
+                                   percentage=three_step_buy[three_step_buy_strategy][2],
+                                   option="f_3" + three_step_buy_strategy)
                         trader.info["first_buy"]["buy_time"] += 1
             return trader
 
@@ -623,28 +641,32 @@ def earn_percent_w_smart_start_w_small_steps_w_safety_double(info, trader, stock
         if last_price == trader.info["safety_sell"]["price"]:
             cond = True
         else:
-            cond = last_price * (1 - threshold) > stock_info["price"]
+            cond = last_price * (1 - down_threshold) > stock_info["price"] or \
+                   trader.info["last_ding"]["price"] * (1 - down_threshold) > stock_info["price"]
         if cond:
             # 三段式购买
-            if trader.info["first_buy"]["price"] == 0:
+            if trader.info["first_buy"]["buy_time"] == 0:
                 trader.buy(stock_info["stock"], stock_info["price"], stock_info["date"],
-                           percentage=three_step_buy[three_step_buy_strategy][1])
+                           percentage=three_step_buy[three_step_buy_strategy][1],
+                           option="a_1" + three_step_buy_strategy)
                 trader.info["first_buy"]["price"] = stock_info["price"]
                 trader.info["first_buy"]["buy_time"] = 1
             else:
                 # 连续底，追涨
                 cond_1 = pd.Timestamp(trader.info["last_di"]["date"]) > pd.Timestamp(trader.info["last_ding"]["date"])
                 # 上一个顶的价格比当前价格高
-                cond_2 = trader.info["last_ding"]["price"] * (1 - threshold) > stock_info["price"]
+                cond_2 = trader.info["last_ding"]["price"] * (1 - down_threshold) > stock_info["price"]
                 if trader.info["first_buy"]["buy_time"] == 1:
                     if cond_1 or cond_2:  # 追买 25%
                         trader.buy(stock_info["stock"], stock_info["price"], stock_info["date"],
-                                   percentage=three_step_buy[three_step_buy_strategy][1])
+                                   percentage=three_step_buy[three_step_buy_strategy][1],
+                                   option="a_2" + three_step_buy_strategy)
                         trader.info["first_buy"]["buy_time"] += 1
-                else:
+                elif trader.info["first_buy"]["buy_time"] == 2:
                     if cond_1 or cond_2:  # 追买 25%
                         trader.buy(stock_info["stock"], stock_info["price"], stock_info["date"],
-                                   percentage=three_step_buy[three_step_buy_strategy][2])
+                                   percentage=three_step_buy[three_step_buy_strategy][2],
+                                   option="a_3" + three_step_buy_strategy)
                         trader.info["first_buy"]["buy_time"] += 1
 
         trader.info["last_di"] = {

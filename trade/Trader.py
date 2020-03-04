@@ -8,8 +8,9 @@ class Trader:
         self.last_sell = {}
         self.info = {}
 
-    def buy(self, stock, price, date, quantity=None, percentage=None):
+    def buy(self, stock, price, date, quantity=None, percentage=None, option=None):
         could_buy = self.all_money // (price * 100)
+        # print("buy:" + option + "_" + str(percentage))
 
         if could_buy <= 1:
             return
@@ -49,16 +50,17 @@ class Trader:
             "amount": amount,
             "type_is": "buy",
             "date": date,
+            "option": option
         }
         self.trading_record.append(inter)
         # print(inter)
 
-    def sell(self, stock, price, date, quantity=None, percentage=None):
+    def sell(self, stock, price, date, quantity=None, percentage=None, option=None):
         if stock in self.holding_stock:
             could_sell = self.holding_stock[stock]["quantity"]
         else:
             return
-
+        # print("sell:" + option + "_" + str(percentage))
         if quantity is None:
             if percentage is None:
                 quantity = could_sell
@@ -93,6 +95,7 @@ class Trader:
             "all_money": self.all_money,
             "date": date,
             "earn_percentage": (self.all_money + holding_stock_value - self.invest) / self.invest,
+            "option":option
         }
         self.trading_record.append(inter)
         # print(inter)

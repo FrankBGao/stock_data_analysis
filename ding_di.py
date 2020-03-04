@@ -274,7 +274,7 @@ if __name__ == '__main__':
     # this_functions = {"ding": {"fun": get_ding_five, "sliding_window": 5},
     #                   "di": {"fun": get_di_five, "sliding_window": 5}}
     # this_data = pd.read_excel("sh60030.xlsx")
-    this_code = "600805"  # 600036 # 600298 # 000858 # 600999 # 000527 # 600717 # 600030
+    this_code = "000596"  # 600036 # 600298 # 000858 # 600999 # 000527 # 600717 # 600030
 
     try:
         this_data = pd.read_excel("trade/data/code" + this_code + ".xlsx")
