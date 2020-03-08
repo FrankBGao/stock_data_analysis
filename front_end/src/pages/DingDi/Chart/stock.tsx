@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Button, Modal, Input, Switch} from "antd";
+import {Button, Modal, Input, Switch, message, Card} from "antd";
 import Basic from "./multipleChart";
 
 import service from "../Service"
@@ -47,10 +47,22 @@ const Stock: React.FC<StockProps> = props => {
     setState({...state, modalShow: true});
   };
 
+  const refreshData = async () => {
+    await service.queryRefresh();
+  };
+  const ButtonRefreshOnClick = () => {
+    refreshData().then();
+    message.success("更新成功")
+  };
+
   return (
     <div>
-      <Button type="primary" onClick={ButtonOnClick}>
+      <Button type="danger" onClick={ButtonOnClick}>
         顶底识别
+      </Button>
+
+      <Button type="danger" onClick={ButtonRefreshOnClick} style={{marginLeft:10}}>
+        数据更新
       </Button>
 
       <Modal
@@ -79,13 +91,15 @@ const Stock: React.FC<StockProps> = props => {
         </div>
       </Modal>
 
-      <div style={{marginTop:20}}>
+      <Card style={{marginTop:10}}>
+      <div >
         <h3>股票代码:{state.code}</h3>
       </div>
 
       <div style={{marginTop:20}}>
         <Basic data={state.data}/>
       </div>
+      </Card>
     </div>
   )
 };

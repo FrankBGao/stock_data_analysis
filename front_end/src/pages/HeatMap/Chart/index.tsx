@@ -80,7 +80,7 @@ const Chart: React.FC<{}> = props => {
 
   return (
     <div>
-      <Button onClick={ButtonOnClick} style={{marginLeft: 15}} type="danger">
+      <Button onClick={ButtonOnClick} type="danger">
         更新图形
       </Button>
 

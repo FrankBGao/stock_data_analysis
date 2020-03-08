@@ -25,6 +25,19 @@ const queryRegression = async (code:string,option:any,) => {
   )
 };
 
+
+//refresh file
+const queryRefresh = async () => {
+  const data = await request.get('/server/api/refresh_code_data', {
+  });
+  //{"col": ["aa", "bb"]}
+  checkLogout(data);
+  return new Promise(resolve =>
+    resolve(data),
+  );
+};
+
+
 //upload file col setting
 // const sendDataColNameSetting = async (setting:any, userID?:string) => {
 //   const data = await request.get('/server/api/file_col_setting', {
@@ -65,7 +78,8 @@ const queryRegression = async (code:string,option:any,) => {
 
 
 export default {
-  queryRegression
+  queryRegression,
+  queryRefresh
 };
 
 

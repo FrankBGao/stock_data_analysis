@@ -4,7 +4,12 @@ import datetime
 app_path = "data/"
 
 
-def gain_code_data_excel(code):
+def gain_code_data_excel(code, refresh=False):
+    if refresh:
+        to_download_data_path(code, app_path + "data/")
+        data = pd.read_excel(app_path + "data/code" + code + ".xlsx")
+        return data
+
     try:
         data = pd.read_excel(app_path + "data/code" + code + ".xlsx")
     except FileNotFoundError:

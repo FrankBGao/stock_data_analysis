@@ -13,6 +13,7 @@ import pickle
 from ding_di import generate_ding_di
 from trade.regression_trade import run_regression
 from heatmap.algorithm import gain_run_gain_pic, refresh_data
+from data_interface.data_interface import gain_code_data_excel
 
 from object.user import User
 
@@ -112,6 +113,21 @@ def user_login():
     return jsonify({"currentAuthority": 'guest', "status": 'error', "type": type_is})
 
 
+@app.route(all_url + '/refresh_code_data')
+def refresh_code_data():
+    user = check_user(request)
+    if user is None:
+        return jsonify({"logout": True})
+    code = request.args.get('code')
+
+    try:
+        gain_code_data_excel(code, refresh=True)
+        result = True
+    except:
+        result = False
+    return add_user_on_response({"result": result}, user)
+
+
 @app.route(all_url + '/ding_di')
 def ding_di():
     user = check_user(request)
@@ -122,6 +138,7 @@ def ding_di():
     code = request.args.get('code')
     combine_switch = request.args.get('combineDingDi')
     adjustment = request.args.get('adjustment')
+
     data = generate_ding_di(code, inter[combine_switch], inter[adjustment])
     return add_user_on_response(data, user)
 
@@ -138,7 +155,7 @@ def regress():
     option = data["option"]
 
     result = run_regression(code, option['invest'], parameter=option, combine_switch=True, strategy=option["strategy"])
-    print(result)
+    # print(result)
     return add_user_on_response(result, user)
 
 

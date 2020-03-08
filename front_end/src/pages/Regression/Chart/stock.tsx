@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Button, Modal, Input, Select, Card, Row, Col, Slider, InputNumber, Tabs} from "antd";
+import {Button, Modal, Input, Select, Card, Row, Col, Slider, InputNumber, Tabs ,message} from "antd";
 import Basic from "./multipleChart";
 import Curved from "./lineChart";
 import TradeTable from "./tradeRecordTable";
@@ -94,12 +94,24 @@ const Stock: React.FC<StockProps> = props => {
     setState({...state, modalShow: true});
   };
 
+  const refreshData = async () => {
+    await service.queryRefresh();
+  };
+  const ButtonRefreshOnClick = () => {
+    refreshData().then();
+    message.success("更新成功")
+  };
+
 
   return (
     <div>
       <div style={{marginBottom: 20}}>
-        <Button onClick={ButtonOnClick} style={{marginLeft: 15}} type="danger">
+        <Button onClick={ButtonOnClick}type="danger">
           回测
+        </Button>
+
+        <Button type="danger" onClick={ButtonRefreshOnClick} style={{marginLeft:10}}>
+          数据更新
         </Button>
       </div>
       <Top code={state.code}

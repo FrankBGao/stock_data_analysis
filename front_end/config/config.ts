@@ -121,9 +121,9 @@ export default {
             },
             {
               path: '/heatmap',
-              name: '市场热力分析',
+              name: '热力分析',
               icon: 'HeatMap',
-              component: './Regression'//'./DashboardAnalysis',
+              component: './HeatMap'//'./DashboardAnalysis',
             },
             // {
             //   path: '/workspace',
