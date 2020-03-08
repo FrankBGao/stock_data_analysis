@@ -120,11 +120,17 @@ export default {
               component: './Regression'//'./DashboardAnalysis',
             },
             {
-              path: '/workspace',
-              name: 'Workspace',
-              icon: 'bank',
-              component: './Workspace'//'./DashboardAnalysis',
+              path: '/heatmap',
+              name: '市场热力分析',
+              icon: 'HeatMap',
+              component: './Regression'//'./DashboardAnalysis',
             },
+            // {
+            //   path: '/workspace',
+            //   name: 'Workspace',
+            //   icon: 'bank',
+            //   component: './Workspace'//'./DashboardAnalysis',
+            // },
             {
               path: '/admin',
               name: 'admin',

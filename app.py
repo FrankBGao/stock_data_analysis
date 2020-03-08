@@ -12,6 +12,7 @@ import pickle
 
 from ding_di import generate_ding_di
 from trade.regression_trade import run_regression
+from heatmap.algorithm import gain_run_gain_pic, refresh_data
 
 from object.user import User
 
@@ -139,6 +140,35 @@ def regress():
     result = run_regression(code, option['invest'], parameter=option, combine_switch=True, strategy=option["strategy"])
     print(result)
     return add_user_on_response(result, user)
+
+
+@app.route(all_url + '/heatmap', methods=['GET'])
+def heatmap():
+    user = check_user(request)
+    if user is None:
+        return jsonify({"logout": True})
+
+    inter = {"true": True, "false": False}
+    all_market = inter[request.args.get('allMarket')]
+    indus = request.args.get('indus')
+
+    if all_market:
+        result = gain_run_gain_pic()
+    else:
+        result = gain_run_gain_pic(indus)
+    return add_user_on_response({"result": result}, user)
+
+
+@app.route(all_url + '/refreshing_heatmap_data', methods=['GET'])
+def refreshing_heatmap_data():
+    user = check_user(request)
+    if user is None:
+        return jsonify({"logout": True})
+    result = refresh_data()
+    if result:
+        return add_user_on_response({"result": True}, user)
+    else:
+        return add_user_on_response({"result": False}, user)
 
 
 if __name__ == '__main__':

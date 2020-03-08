@@ -16,7 +16,7 @@ def gain_code_data_excel(code):
 def gain_daily_data_excel(refresh=False):
     if refresh:
         to_download_today(app_path + "daily/")
-        data = pd.read_excel(app_path+  "daily/" + "daily" + ".xlsx", dtype={"code": str})
+        data = pd.read_excel(app_path+"daily/" + "daily" + ".xlsx", dtype={"code": str})
         return data
     try:
         data = pd.read_excel(app_path+ "daily/" + "daily" + ".xlsx", dtype={"code": str})

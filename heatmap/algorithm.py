@@ -130,7 +130,7 @@ def gain_pic(daily, category):
     return json.dumps([total_item.return_json()])
 
 
-def gain_run_gain_pic(indus = None, daily_refresh=False, category_refresh=False):
+def gain_run_gain_pic(indus=None, daily_refresh=False, category_refresh=False):
     if indus is None:
         daily = gain_daily_data_excel(daily_refresh)
         category = gain_category_data_excel(category_refresh)
@@ -141,6 +141,14 @@ def gain_run_gain_pic(indus = None, daily_refresh=False, category_refresh=False)
         category = category[category["industry"] == indus]
         return gain_pic(daily, category)
 
+
+def refresh_data():
+    try:
+        gain_daily_data_excel(refresh=True)
+        gain_category_data_excel(refresh=True)
+        return True
+    except:
+        return False
 
 
 # data = ts.get_today_all()

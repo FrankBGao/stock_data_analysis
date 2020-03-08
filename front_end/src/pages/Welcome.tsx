@@ -17,7 +17,7 @@ export default (): React.ReactNode => (
   <PageHeaderWrapper>
     <Card>
       <Alert
-        message="凡得流程，发掘事件流中的价值"
+        message="凡得流程，发掘数据中的价值"
         type="success"
         showIcon
         banner
