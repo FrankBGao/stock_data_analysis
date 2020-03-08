@@ -21,4 +21,4 @@ def visual(data):
     data = data[["time", "start", "end", "max", "min", "volumn", "point","ptype"]]
     data["money"] = data["start"] * data["volumn"]
 
-    return data.to_json(orient="records")
+    return data.to_dict(orient="records")

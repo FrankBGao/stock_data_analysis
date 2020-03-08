@@ -59,7 +59,7 @@ if (pwa) {
     });
   });
 } else if ('serviceWorker' in navigator) {
-  // unregister service worker
+  // unregister Service worker
   const { serviceWorker } = navigator;
   if (serviceWorker.getRegistrations) {
     serviceWorker.getRegistrations().then(sws => {

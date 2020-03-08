@@ -18,9 +18,9 @@ import DataSet from "@antv/data-set";
 import Slider from "bizcharts-plugin-slider";
 
 // let data = require("./data.json");
-let data = require("./result.json");
 
-function getComponent(data) {
+
+function getComponent(data:any) {
   const {DataView} = DataSet;
   const cols = {
     time: {
@@ -53,8 +53,8 @@ function getComponent(data) {
   // 设置状态量，时间格式建议转换为时间戳，转换为时间戳时请注意区间
   const ds = new DataSet({
     state: {
-      start: "2017-9-04",
-      end: "2020-02-26"
+      start: data[0]["time"],//"2017-9-04",
+      end: data[data.length -1]["time"]//"2020-02-26"
     }
   });
   const dv = ds.createView();
@@ -86,13 +86,13 @@ function getComponent(data) {
       return (
         <div>
           <Chart
-            height={window.innerHeight>800?700:window.innerHeight - 50}//{window.innerHeight - 50}
+            height={window.innerHeight > 1000 ? 800 : window.innerHeight - 50}//{window.innerHeight - 50}
             animate={false}
             padding={[10, 40, 40, 40]}
             data={dv}
             scale={cols}
             forceFit
-            plotBackground={{fill:"#ffffff"}}
+            plotBackground={{fill: "#ffffff"}}
           >
             <Legend offset={20}/>
             <Tooltip
@@ -102,7 +102,7 @@ function getComponent(data) {
             <View
               end={{
                 x: 1,
-                y: 0.5
+                y: 0.7
               }}
               data={dv}
             >
@@ -123,36 +123,34 @@ function getComponent(data) {
               <Geom
                 type="point"
                 position="time*point"
-                color={['ptype', (ptype)=>{
+                color={['ptype', (ptype) => {
                   //some code
-                  if(ptype == "ding")
-                    return '#ff33e3';
-                  if (ptype == "di")
+                  if (ptype == "ding")
                     return '#3155ff';
-                  if (ptype == "ding_tp")
+                  if (ptype == "di")
+                    return '#ff33e3';
+                  if (ptype == "ding_sell")
                     return '#ff1e20';
-                  if (ptype == "di_tp")
+                  if (ptype == "di_buy")
                     return '#0ea7ff';
-                  if (ptype == "ding_fn")
+                  if (ptype == "sell")
                     return '#ff781e';
-                  if (ptype == "di_fn")
+                  if (ptype == "buy")
                     return '#a5afff';
-                  if (ptype == "in_trend_fp")
-                    return '#13ff13';
                   else
                     return '#ffffff';
                 }]}
-                opacity={['ptype', (ptype)=>{
+                opacity={['ptype', (ptype) => {
                   //some code
-                  if(ptype == "in_trend")
+                  if (ptype == "in_trend")
                     return 0;
                   else
                     return 0.65;
                 }]}
                 shape="circle"
-                size={['ptype', (ptype)=>{
+                size={['ptype', (ptype) => {
                   //some code
-                  if(ptype == "in_trend")
+                  if (ptype == "in_trend")
                     return 0;
                   else
                     return 10;
@@ -201,7 +199,7 @@ function getComponent(data) {
             <View
               start={{
                 x: 0,
-                y: 0.65
+                y: 0.7
               }}
               data={dv}
               scale={{
@@ -277,9 +275,26 @@ function getComponent(data) {
   return SliderChart;
 }
 
-class Basic extends React.Component {
+interface ChartState {
+
+}
+
+interface ChartProps {
+  data: any
+}
+
+class Basic extends React.Component <ChartProps,ChartState> {
+
+  constructor(props: { data: any, }) {//dispatch: Dispatch
+    super(props);
+
+    this.state = {
+      data: props.data
+    };
+  }
+
   render() {
-    const SliderChart = getComponent(data);
+    const SliderChart = getComponent(this.props.data);
     return (
       <div>
         <SliderChart/>
@@ -289,3 +304,22 @@ class Basic extends React.Component {
 }
 
 export default Basic;
+
+
+
+// if (ptype == "ding")
+//   return '#ff33e3';
+// if (ptype == "di")
+//   return '#3155ff';
+// if (ptype == "ding_tp")
+//   return '#ff1e20';
+// if (ptype == "di_tp")
+//   return '#0ea7ff';
+// if (ptype == "ding_fn")
+//   return '#ff781e';
+// if (ptype == "di_fn")
+//   return '#a5afff';
+// if (ptype == "in_trend_fp")
+//   return '#13ff13';
+// else
+//   return '#ffffff';

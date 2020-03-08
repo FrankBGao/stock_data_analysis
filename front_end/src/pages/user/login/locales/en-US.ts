@@ -57,9 +57,9 @@ export default {
   'user-login.standard.label': 'Metrics',
   'user-login.standard.placeholder': 'Please enter a metric',
   'user-login.client.label': 'Client',
-  'user-login.label.tooltip': 'Target service object',
+  'user-login.label.tooltip': 'Target Service object',
   'user-login.client.placeholder':
-    'Please describe your customer service, internal customers directly @ Name / job number',
+    'Please describe your customer Service, internal customers directly @ Name / job number',
   'user-login.invites.label': 'Inviting critics',
   'user-login.invites.placeholder':
     'Please direct @ Name / job number, you can invite up to 5 people',

@@ -42,6 +42,7 @@ class Trader:
         self.last_buy = {stock: {"stock": stock,
                                  "quantity": quantity,
                                  "price": price,
+                                 "date": date,
                                  }}
         inter = {
             "stock": stock,
@@ -83,6 +84,7 @@ class Trader:
         self.last_sell = {stock: {"stock": stock,
                                   "quantity": quantity,
                                   "price": price,
+                                  "date": date,
                                   }
                           }
 

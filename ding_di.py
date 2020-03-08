@@ -2,7 +2,7 @@ import pandas as pd
 from visual import visual
 from gain_data import to_download_data_path
 from machine_learning.predict_ding_di import combine_interval_points
-
+from data_interface.data_interface import gain_code_data_excel
 
 # just two days
 # def get_ding(input_data):
@@ -178,7 +178,7 @@ def get_advance_di(input_data):
     return True
 
 
-def run_functions(functions, data):
+def run_functions(functions, data, adjustment=None):
     data.index = range(len(data))
     result = []
     max_one_slide = max([functions[i]["sliding_window"] for i in functions])
@@ -194,15 +194,17 @@ def run_functions(functions, data):
         if len(this_result) == 0:
             continue
 
-        # 纠正过滞后的
-        # if len(this_result) == 1:
-        #     result.append({"index": i + one_slide - 1, "type_is": this_result[0]})
-        # else:
-        #     result.append({"index": i + one_slide - 1, "type_is": this_result})
-        if len(this_result) == 1:
-            result.append({"index": i, "type_is": this_result[0]})
+        if not adjustment is None and adjustment is True:
+            # 纠正过滞后的
+            if len(this_result) == 1:
+                result.append({"index": i + max_one_slide - 1, "type_is": this_result[0]})
+            else:
+                result.append({"index": i + max_one_slide - 1, "type_is": this_result})
         else:
-            result.append({"index": i, "type_is": this_result})
+            if len(this_result) == 1:
+                result.append({"index": i, "type_is": this_result[0]})
+            else:
+                result.append({"index": i, "type_is": this_result})
 
     return result
 
@@ -262,6 +264,29 @@ def merge_result_back_to_data(data, linked_result, fun_result):
     data["point"] = data.apply(lambda x: x["open"] if pd.isna(x["point"]) else x["point"], axis=1)
     data["ptype"] = data["ptype"].fillna("in_trend")
     return data
+
+
+def generate_ding_di(code, combine_switch=True, adjustment=None):
+    functions = {"ding": {"fun": get_ding, "sliding_window": 3}, "di": {"fun": get_di, "sliding_window": 3}}
+    # code = "000596"  # 600036 # 600298 # 000858 # 600999 # 000527 # 600717 # 600030
+
+    # try:
+    #     data = pd.read_excel("trade/data/code" + code + ".xlsx")
+    # except FileNotFoundError:
+    #     to_download_data_path(code, "trade/data/")
+    #     data = pd.read_excel("trade/data/code" + code + ".xlsx")
+
+    data = gain_code_data_excel(code)
+    data.index = range(len(data))
+    fun_result = run_functions(functions, data, adjustment)
+
+    if combine_switch:
+        fun_result = combine_interval_points(fun_result, data, just_first_one=True)
+
+    linked_result = link_between_ding_di(data, fun_result)
+    result = merge_result_back_to_data(data, linked_result, fun_result)
+    result = visual(result)
+    return result
 
 
 if __name__ == '__main__':
