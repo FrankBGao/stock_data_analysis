@@ -30,6 +30,7 @@ const Stock: React.FC<StockProps> = props => {
     code: "600030" as string,
     combineDingDi: true,
     adjustment: false,
+    refreshLabel:"示例" as string,
 
     invest: 100000 as number,
     strategy: "complex" as string,
@@ -73,12 +74,13 @@ const Stock: React.FC<StockProps> = props => {
     setState({
       ...state,
       modalShow: false,
+      refreshLabel:" ",
     });
     v_setState({
       ...v_state,
       data: JSON.parse(result["everyday_result"]),
       tradeRecord: JSON.parse(result["trading_record"]),
-      regress_result: result["result"]
+      regress_result: result["result"],
     });
   };
 
@@ -95,7 +97,7 @@ const Stock: React.FC<StockProps> = props => {
   };
 
   const refreshData = async () => {
-    await service.queryRefresh();
+    await service.queryRefresh(state.code);
   };
   const ButtonRefreshOnClick = () => {
     refreshData().then();
@@ -113,6 +115,11 @@ const Stock: React.FC<StockProps> = props => {
         <Button type="danger" onClick={ButtonRefreshOnClick} style={{marginLeft:10}}>
           数据更新
         </Button>
+
+        <label style={{marginLeft: 15}}>
+          {state.refreshLabel}
+        </label>
+
       </div>
       <Top code={state.code}
            priceChange={((v_state.data[v_state.data.length - 1]["end"] - v_state.data[0]["start"]) * 100 / v_state.data[0]["start"]).toFixed(2)}

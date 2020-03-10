@@ -26,8 +26,11 @@ const queryDingDi = async (code:string, combineDingDi:boolean, adjustment:boolea
 };
 
 //refresh file
-const queryRefresh = async () => {
+const queryRefresh = async (code:string) => {
   const data = await request.get('/server/api/refresh_code_data', {
+    params: {
+      code: code,
+    }
   });
   //{"col": ["aa", "bb"]}
   checkLogout(data);

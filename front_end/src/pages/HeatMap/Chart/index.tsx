@@ -14,6 +14,7 @@ const Chart: React.FC<{}> = props => {
   const [state, setState] = useState({
     modalShow: false,
 
+    refreshLabel: "未更新" as string,
     tree: tree,
     treeName: "示例",
     indus: "none" as string,
@@ -52,8 +53,10 @@ const Chart: React.FC<{}> = props => {
     const data = await service.queryRefreshing();
     if(data===false){
       message.warning({content:"下载失败", key: "refreshing"});
+      setState({...state, refreshLabel: "下载失败"});
       return
     }
+    setState({...state, refreshLabel: "下载成功"});
     message.loading({content:"下载完成", key: "refreshing"});
   };
 
@@ -87,6 +90,10 @@ const Chart: React.FC<{}> = props => {
       <Button onClick={ButtonRefreshOnClick} style={{marginLeft: 15}} type="danger">
         更新数据
       </Button>
+
+      <label style={{marginLeft: 15}}>
+        {state.refreshLabel}
+      </label>
 
       <Modal
         title={"更新图形"}

@@ -17,6 +17,7 @@ let data = require("./result.json");
 const Stock: React.FC<StockProps> = props => {
 
   const [state, setState] = useState({
+    refreshLabel:"示例" as string,
     data: data as any,
     modalShow: false,
     code: "000596" as string,
@@ -32,7 +33,7 @@ const Stock: React.FC<StockProps> = props => {
 
   const gainDingDi = async () => {
     const data = await service.queryDingDi(state.code, state.combineDingDi, state.adjustment);
-    setState({...state, modalShow: false, data: data});
+    setState({...state, modalShow: false, data: data, refreshLabel:" ",});
   };
 
   const ModalOnOk = () => {
@@ -48,7 +49,7 @@ const Stock: React.FC<StockProps> = props => {
   };
 
   const refreshData = async () => {
-    await service.queryRefresh();
+    await service.queryRefresh(state.code);
   };
   const ButtonRefreshOnClick = () => {
     refreshData().then();
@@ -64,6 +65,10 @@ const Stock: React.FC<StockProps> = props => {
       <Button type="danger" onClick={ButtonRefreshOnClick} style={{marginLeft:10}}>
         数据更新
       </Button>
+
+      <label style={{marginLeft: 15}}>
+        {state.refreshLabel}
+      </label>
 
       <Modal
         title={"顶底识别"}
