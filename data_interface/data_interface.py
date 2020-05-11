@@ -33,7 +33,7 @@ def gain_daily_data_excel(refresh=False):
 
 def gain_category_data_excel(refresh=False):
     if refresh:
-        to_download_today(app_path)
+        to_download_category(app_path)
         data = pd.read_excel(app_path + "category" + ".xlsx", dtype={"code": str})
         return data
     try:

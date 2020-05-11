@@ -143,6 +143,8 @@ def gain_run_gain_pic(indus=None, daily_refresh=False, category_refresh=False):
 
 
 def refresh_data():
+        # gain_daily_data_excel(refresh=True)
+        # gain_category_data_excel(refresh=True)
     try:
         gain_daily_data_excel(refresh=True)
         gain_category_data_excel(refresh=True)
@@ -150,6 +152,8 @@ def refresh_data():
     except:
         return False
 
+if __name__ == '__main__':
+    gain_run_gain_pic()
 
 # data = ts.get_today_all()
 # category = ts.get_stock_basics()

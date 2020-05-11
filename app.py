@@ -24,6 +24,7 @@ userInformation = [
     {"name": "frank", "user_id": "frank", "currentAuthority": "user", "password": "findprocess"},
     {"name": "cong", "user_id": "cong", "currentAuthority": "user", "password": "findprocess"},
     {"name": "long", "user_id": "long", "currentAuthority": "user", "password": "findprocess"},
+    {"name": "yonggan", "user_id": "yonggan", "currentAuthority": "user", "password": "yonggan"},
 ]
 UserList = {}
 UserPassword = []
