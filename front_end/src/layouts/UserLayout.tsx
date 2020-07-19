@@ -37,16 +37,16 @@ const UserLayout: React.FC<UserLayoutProps> = props => {
 
   const footer = [{
     key: 'en',
-    title: '凡得流程',
+    title: '凡得机会',
     href: 'http://www.findprocess.cn',
     blankTarget: true
   }, {
     key: 'zh',
-    title: 'FindProcess',
+    title: 'FindOpportunity',
     href: 'http://www.findprocess.cn',
     blankTarget: true
   }];
-  const defaultCopyright = '2020 凡得流程';
+  const defaultCopyright = '2020 凡得机会';
   return (
     <>
       <Helmet>
@@ -63,10 +63,10 @@ const UserLayout: React.FC<UserLayoutProps> = props => {
             <div className={styles.header}>
               <Link to="/">
                 <img alt="logo" className={styles.logo} src={logo} />
-                <span className={styles.title}>FindProcess</span>
+                <span className={styles.title}>FindOpportunity</span>
               </Link>
             </div>
-            <div className={styles.desc}>凡得流程，让数据说话</div>
+            <div className={styles.desc}>凡得机会，让数据说话</div>
           </div>
           {children}
         </div>

@@ -72,6 +72,8 @@ export default {
   plugins,
   hash: true,
   //history: 'hash',
+  base: '/stock/',
+  publicPath: '/stock/',
   targets: {
     ie: 11,
   },
@@ -122,8 +124,8 @@ export default {
             {
               path: '/heatmap',
               name: '热力分析',
-              icon: 'HeatMap',
-              component: './HeatMap'//'./DashboardAnalysis',
+              icon: 'pie-chart',
+              component: './HeatMap'//'./DashboardAnalysis',HeatMapOutlined//
             },
             // {
             //   path: '/workspace',
@@ -202,7 +204,7 @@ export default {
   },
   //chainWebpack: webpackPlugin,
   proxy: {
-    '/server/api': {
+    '/stock/api': {
       target: 'http://localhost:5000/',//http://34.89.24.76/api/
       changeOrigin: true,
       //pathRewrite: { '^/server/api': '' },

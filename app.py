@@ -41,7 +41,7 @@ app = Flask(__name__)
 # app.config['UPLOAD_FOLDER'] = '.\\uploads'
 # app.config['WORKSPACE_FOLDER'] = '.\\workspace'
 app.wsgi_app = ProxyFix(app.wsgi_app)
-all_url = "/server/api"
+all_url = "/stock/api"
 
 
 # data = json.load(open("result.json", mode="r"))
@@ -73,11 +73,11 @@ def add_user_on_response(information, user):
 # User management ################################################################################################
 ##################################################################################################################
 
-@app.route('/')
+@app.route(all_url + '/')
 def hello():
     # global a
     # a = False if a else True
-    return jsonify({"a": "Hello from the backend"})
+    return jsonify({"a": "Hello from the stock backend"})
 
 
 @app.route(all_url + '/currentUser')

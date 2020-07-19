@@ -5,7 +5,7 @@ export async function query(): Promise<any> {
 }
 
 export async function queryCurrent(): Promise<any> {
-  return request('/server/api/currentUser');//#frank, login in page, first here
+  return request('/stock/api/currentUser');//#frank, login in page, first here
 }
 
 export async function queryNotices(): Promise<any> {
@@ -14,11 +14,11 @@ export async function queryNotices(): Promise<any> {
 
 //findprocess
 export async function queryLogout(): Promise<any> {
-  return request('/server/api/logout');
+  return request('/stock/api/logout');
 }
 
 export async function queryCheckUserServerState(userid:string): Promise<any> {
-  return request('/server/api/currentUserState',
+  return request('/stock/api/currentUserState',
     {
       data: {userid:userid},
     }

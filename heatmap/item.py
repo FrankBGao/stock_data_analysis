@@ -4,6 +4,8 @@ import json
 def gain_color(num):
     if num > 11:
         num = 11
+    if num < -13:
+        num = -13
     num = int(round(num))
     colormap = {
         -13: '#005824',

@@ -10,7 +10,7 @@ const checkLogout = (data: any) => {
 
 //upload file
 const queryDingDi = async (code:string, combineDingDi:boolean, adjustment:boolean) => {
-  const data = await request.get('/server/api/ding_di', {
+  const data = await request.get('/stock/api/ding_di', {
     params: {
       code: code,
       combineDingDi: combineDingDi,
@@ -27,7 +27,7 @@ const queryDingDi = async (code:string, combineDingDi:boolean, adjustment:boolea
 
 //refresh file
 const queryRefresh = async (code:string) => {
-  const data = await request.get('/server/api/refresh_code_data', {
+  const data = await request.get('/stock/api/refresh_code_data', {
     params: {
       code: code,
     }
@@ -41,7 +41,7 @@ const queryRefresh = async (code:string) => {
 
 //upload file col setting
 // const sendDataColNameSetting = async (setting:any, userID?:string) => {
-//   const data = await request.get('/server/api/file_col_setting', {
+//   const data = await request.get('/stock/api/file_col_setting', {
 //     params: {
 //       userID: "this",
 //       setting: setting
@@ -61,7 +61,7 @@ const queryRefresh = async (code:string) => {
 
 //Save Dashboard
 // const querySaveDashboard = async (dashBoardID:string,dashBoardName:string,description:string,dashBoardElement:any,) => {
-//   const data = await request('/server/api/indicator_dashboard/save', {
+//   const data = await request('/stock/api/indicator_dashboard/save', {
 //     method: 'POST',
 //     data: {
 //       dashBoardID: dashBoardID,

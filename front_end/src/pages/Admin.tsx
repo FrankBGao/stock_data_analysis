@@ -16,7 +16,7 @@ export default (): React.ReactNode => (
         }}
       />
       <Typography.Title level={2} style={{ textAlign: 'center' }}>
-        <Icon type="smile" theme="twoTone" /> FindProcess{' '}
+        <Icon type="smile" theme="twoTone" /> FindOpportunity{' '}
         <Icon type="heart" theme="twoTone" twoToneColor="#eb2f96" /> You
       </Typography.Title>
     </Card>

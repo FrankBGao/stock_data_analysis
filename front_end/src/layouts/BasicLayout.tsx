@@ -68,11 +68,11 @@ const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
 
 const defaultFooterDom = (
   <DefaultFooter
-    copyright="凡得流程"
+    copyright="凡得机会"
     links={[
       {
-        key: 'Find Process',
-        title: 'Find Process',
+        key: 'Find Opportunity',
+        title: 'Find Opportunity',
         href: 'https://www.findprocess.cn',
         blankTarget: true,
       },

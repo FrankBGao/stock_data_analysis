@@ -55,7 +55,7 @@ export default {
   menu: {
     locale: true,
   },
-  title: '凡得流程',
+  title: '凡得机会',
   pwa: false,
   iconfontUrl: '',
 } as DefaultSettings;

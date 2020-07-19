@@ -11,7 +11,7 @@ const checkLogout = (data: any) => {
 };
 
 const queryHeatmap = async (allMarket:boolean, indus:string) => {
-  const data = await request.get('/server/api/heatmap', {
+  const data = await request.get('/stock/api/heatmap', {
     params: {
       allMarket: allMarket,
       indus: indus,
@@ -26,7 +26,7 @@ const queryHeatmap = async (allMarket:boolean, indus:string) => {
 };
 
 const queryRefreshing = async () => {
-  const data = await request.get('/server/api/refreshing_heatmap_data', {
+  const data = await request.get('/stock/api/refreshing_heatmap_data', {
     // params: {
     //   allMarket: allMarket,
     //   indus: indus,
@@ -43,7 +43,7 @@ const queryRefreshing = async () => {
 
 //upload file col setting
 // const sendDataColNameSetting = async (setting:any, userID?:string) => {
-//   const data = await request.get('/server/api/file_col_setting', {
+//   const data = await request.get('/stock/api/file_col_setting', {
 //     params: {
 //       userID: "this",
 //       setting: setting
@@ -63,7 +63,7 @@ const queryRefreshing = async () => {
 
 //Save Dashboard
 // const querySaveDashboard = async (dashBoardID:string,dashBoardName:string,description:string,dashBoardElement:any,) => {
-//   const data = await request('/server/api/indicator_dashboard/save', {
+//   const data = await request('/stock/api/indicator_dashboard/save', {
 //     method: 'POST',
 //     data: {
 //       dashBoardID: dashBoardID,
